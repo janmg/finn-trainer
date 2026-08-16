@@ -43,5 +43,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/"
-          output_location: "dist/finn-trainer"
+          output_location: "dist/finn-trainer/browser"
           skip_app_build: true
