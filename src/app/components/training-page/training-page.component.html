@@ -1,0 +1,193 @@
+<section *ngIf="isLoading" class="state">Loading page... ({{ loadTrace }})</section>
+<section *ngIf="!isLoading && errorMessage" class="state error">{{ errorMessage }} ({{ loadTrace }})</section>
+
+<section *ngIf="!isLoading && page" class="trainer">
+  <header class="title-row">
+    <div>
+      <p class="topic">{{ page.topic | titlecase }} Training</p>
+      <h2>{{ page.title }}</h2>
+    </div>
+    <span *ngIf="page.isTemplate" class="tag">Template</span>
+  </header>
+
+  <article>
+    <h3>Topics</h3>
+    <div class="language-topics">
+      <button
+        *ngFor="let languageTopic of languageTopics"
+        type="button"
+        class="topic-chip"
+        [class.active]="selectedLanguageTopic === languageTopic"
+        (click)="setLanguageTopic(languageTopic)"
+      >
+        {{ languageTopic | titlecase }}
+      </button>
+    </div>
+  </article>
+
+  <article>
+    <h3>Mode</h3>
+    <nav class="mode-tabs" aria-label="Training mode">
+      <a
+        *ngFor="let mode of trainingModes"
+        [routerLink]="['/train', mode, selectedLevel]"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        {{ mode | titlecase }}
+      </a>
+    </nav>
+  </article>
+
+  <div class="slider-wrap">
+    <label for="difficulty">Difficulty: {{ selectedLevel }}/5</label>
+    <input
+      #difficultySlider
+      id="difficulty"
+      type="range"
+      min="1"
+      max="5"
+      step="1"
+      [ngModel]="selectedLevel"
+      (ngModelChange)="onSliderInput($event)"
+      (change)="onSliderCommit(difficultySlider.value)"
+    />
+    <div class="scale">
+      <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+    </div>
+  </div>
+
+  <article>
+    <h3>Explanation</h3>
+    <p>{{ page.explanation }}</p>
+
+    <div *ngIf="isVowelLesson" class="pronunciation-table">
+      <h4>Finnish Vowels Pronunciation Guide</h4>
+      <table class="vowel-guide">
+        <thead>
+          <tr>
+            <th>Vowel</th>
+            <th>Finnish</th>
+            <th>English</th>
+            <th>IPA</th>
+            <th>Equivalent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>a</td>
+            <td>a</td>
+            <td>ä</td>
+            <td>ä</td>
+            <td>father, car</td>
+          </tr>
+          <tr>
+            <td>e</td>
+            <td>e</td>
+            <td>ɛ</td>
+            <td>ɛ</td>
+            <td>best</td>
+          </tr>
+          <tr>
+            <td>i</td>
+            <td>ee</td>
+            <td>i</td>
+            <td>i</td>
+            <td>feet</td>
+          </tr>
+          <tr>
+            <td>o</td>
+            <td>oh</td>
+            <td>ɔ</td>
+            <td>ɔ</td>
+            <td>so, hope</td>
+          </tr>
+          <tr>
+            <td>u</td>
+            <td>oo</td>
+            <td>u</td>
+            <td>u</td>
+            <td>moon, scooter</td>
+          </tr>
+          <tr>
+            <td>ä</td>
+            <td>a'</td>
+            <td>æ</td>
+            <td>æ</td>
+            <td>cat, apple</td>
+          </tr>
+          <tr>
+            <td>ö</td>
+            <td>uh</td>
+            <td>ɘ</td>
+            <td>ɘ</td>
+            <td>liver</td>
+          </tr>
+          <tr>
+            <td>y</td>
+            <td>ü</td>
+            <td>y</td>
+            <td>y</td>
+            <td>über</td>
+          </tr>
+          <tr>
+            <td>å</td>
+            <td>oh</td>
+            <td>ɑ</td>
+            <td>ɑ</td>
+            <td>Swedish-o</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <article class="exercise">
+    <h3>Test On Understanding</h3>
+    <p>{{ page.exercise }}</p>
+
+    <audio #audioPlayer class="hidden-audio"></audio>
+
+    <div *ngIf="isVowelLesson" class="vowel-exercise">
+      <div class="audio-controls">
+        <button type="button" class="play-btn" (click)="playAudio()" [disabled]="isPlayingSession">▶ Play (20 sounds)</button>
+        <button type="button" class="stop-btn" (click)="stopAudio()">⏹ Stop</button>
+      </div>
+
+      <div class="vowel-buttons">
+        <button
+          *ngFor="let vowel of orderedVowels"
+          type="button"
+          class="vowel-btn"
+          [class.selected]="selectedVowel === vowel"
+          [disabled]="!isPlayingSession"
+          (click)="selectVowel(vowel)"
+        >
+          {{ vowel.toUpperCase() }}
+        </button>
+      </div>
+
+      <div *ngIf="currentVowel" class="session-info">
+        <p class="round-counter">Round: {{ currentRound }}/20</p>
+      </div>
+
+      <p *ngIf="submitMessage" class="feedback" [class.correct]="isCorrect" [class.incorrect]="!isCorrect && submitMessage.includes('Incorrect')">
+        {{ submitMessage }}
+      </p>
+    </div>
+
+    <div *ngIf="!isVowelLesson">
+      <label for="answer">Your answer</label>
+      <textarea
+        id="answer"
+        rows="4"
+        [ngModel]="answer"
+        (ngModelChange)="answer = $event"
+        placeholder="Write your answer here"
+      ></textarea>
+
+      <button type="button" (click)="submitAnswer()">Submit</button>
+      <p *ngIf="submitMessage" class="feedback">{{ submitMessage }}</p>
+    </div>
+  </article>
+</section>

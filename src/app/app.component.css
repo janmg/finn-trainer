@@ -1,0 +1,40 @@
+.shell {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.hero {
+  background: var(--surface);
+  border: 2px solid #00000014;
+  border-radius: 22px;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.kicker {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #6d4c41;
+}
+
+.hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin-bottom: 0.5rem;
+}
+
+.hero p {
+  margin: 0.3rem 0;
+}
+
+.page-card {
+  margin-top: 1rem;
+  background: #fffdf8;
+  border-radius: 22px;
+  border: 2px solid #0000000f;
+  box-shadow: 0 15px 35px #0000000f;
+  padding: 1rem;
+}

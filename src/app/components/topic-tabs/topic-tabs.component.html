@@ -1,0 +1,10 @@
+<nav class="tabs" aria-label="Training topics">
+  <a
+    *ngFor="let tab of tabs"
+    [routerLink]="['/train', tab, 1]"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+  >
+    {{ tab | titlecase }}
+  </a>
+</nav>

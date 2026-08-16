@@ -1,0 +1,31 @@
+:root {
+  --paper: #f2efe5;
+  --ink: #202124;
+  --accent: #e76f51;
+  --accent-soft: #f4a261;
+  --surface: #ffffffcc;
+  --ok: #2a9d8f;
+  --warn: #c1121f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%, #ffe8d6 0%, transparent 50%),
+    radial-gradient(circle at 90% 15%, #cfe1b9 0%, transparent 40%),
+    linear-gradient(135deg, #f2efe5 0%, #f7f4ea 100%);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  margin: 0;
+}
