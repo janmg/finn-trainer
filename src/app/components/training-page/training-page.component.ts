@@ -28,7 +28,7 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
   selectedLanguageTopic = 'vowels';
   loadTrace = 'init';
   isVowelLesson = false;
-  vowels = ['a', 'e', 'i', 'o', 'u', 'y', 'ä', 'ö', 'å'];
+  vowels = ['a', 'e', 'i', 'o', 'u', 'y', 'ä', 'ö'];
   orderedVowels = ['a', 'o', 'u', 'ä', 'ö', 'y', 'å', 'e', 'i'];
   selectedVowel: string | null = null;
   isPlayingSession = false;

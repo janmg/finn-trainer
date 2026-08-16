@@ -159,8 +159,9 @@
           *ngFor="let vowel of orderedVowels"
           type="button"
           class="vowel-btn"
+          [class.disabled-vowel]="vowel === 'å'"
           [class.selected]="selectedVowel === vowel"
-          [disabled]="!isPlayingSession"
+          [disabled]="!isPlayingSession || vowel === 'å'"
           (click)="selectVowel(vowel)"
         >
           {{ vowel.toUpperCase() }}

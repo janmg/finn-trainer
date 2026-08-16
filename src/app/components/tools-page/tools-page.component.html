@@ -1,0 +1,178 @@
+<div class="tools-container">
+  <div class="top-nav">
+    <a routerLink="/train/listen/1" class="back-link">← Back to Training</a>
+    <h2>🛠 Class Tools (Luokkasovellus)</h2>
+  </div>
+
+  <!-- Class Selector Header -->
+  <div class="class-header-card">
+    <div class="class-selector">
+      <span class="icon">🏫</span>
+      <select [(ngModel)]="selectedClassId" (change)="updateClassStudents()">
+        <option *ngFor="let cls of classes" [value]="cls.id">{{ cls.name }}</option>
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="addClass()">+ Uusi luokka</button>
+    </div>
+
+    <div class="student-count-badge">
+      <span>{{ currentStudents.length }} oppilasta</span>
+      <button type="button" class="btn btn-primary btn-sm" (click)="openEditClassModal()">
+        ✏️ Muokkaa oppilaita
+      </button>
+    </div>
+  </div>
+
+  <!-- Tool Tabs -->
+  <div class="tool-tabs">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab === 'groups'"
+      (click)="activeTab = 'groups'"
+    >
+      🎲 Ryhmät
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab === 'queue'"
+      (click)="activeTab = 'queue'"
+    >
+      📋 Jono
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab === 'seating'"
+      (click)="activeTab = 'seating'"
+    >
+      🪑 Istumajärjestys
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab === 'wheel'"
+      (click)="activeTab = 'wheel'"
+    >
+      🎡 Onnenpyörä
+    </button>
+  </div>
+
+  <!-- Tab Content: Groups -->
+  <div *ngIf="activeTab === 'groups'" class="tab-content">
+    <h3>🎲 Ryhmäjako</h3>
+    <p class="description">Jaa oppilaat ryhmiin arpomalla.</p>
+
+    <div class="controls-row">
+      <label>
+        Ryhmän koko:
+        <input type="number" [(ngModel)]="groupSize" min="1" max="20" />
+      </label>
+      <button type="button" class="btn btn-accent" (click)="generateGroups()">Arvo ryhmät</button>
+    </div>
+
+    <div *ngIf="generatedGroups.length" class="results-grid">
+      <div *ngFor="let group of generatedGroups; let i = index" class="result-card">
+        <h4>Ryhmä {{ i + 1 }}</h4>
+        <ul>
+          <li *ngFor="let student of group">{{ student }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Queue -->
+  <div *ngIf="activeTab === 'queue'" class="tab-content">
+    <h3>📋 Jono</h3>
+    <p class="description">Arvo oppilaat järjestysjonoon.</p>
+
+    <div class="controls-row">
+      <button type="button" class="btn btn-accent" (click)="generateQueue()">Arvo jono</button>
+    </div>
+
+    <div *ngIf="generatedQueue.length" class="queue-list">
+      <ol>
+        <li *ngFor="let student of generatedQueue">{{ student }}</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Tab Content: Seating -->
+  <div *ngIf="activeTab === 'seating'" class="tab-content">
+    <h3>🪑 Istumajärjestys</h3>
+    <p class="description">Sijoita oppilaat pulpetteihin rivittäin.</p>
+
+    <div class="controls-row">
+      <label>
+        Pulpetteja rivissä:
+        <input type="number" [(ngModel)]="seatsPerRow" min="1" max="10" />
+      </label>
+      <button type="button" class="btn btn-accent" (click)="generateSeating()">Arvo istumajärjestys</button>
+    </div>
+
+    <div *ngIf="generatedSeating.length" class="seating-grid">
+      <div *ngFor="let row of generatedSeating; let r = index" class="seating-row">
+        <span class="row-label">Rivi {{ r + 1 }}</span>
+        <div class="desks">
+          <div *ngFor="let student of row" class="desk-card">
+            🪑 {{ student }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Wheel -->
+  <div *ngIf="activeTab === 'wheel'" class="tab-content">
+    <h3>🎡 Onnenpyörä</h3>
+    <p class="description">Arvo oppilas tai omat sanat pyörällä.</p>
+
+    <div class="wheel-section">
+      <div class="wheel-controls">
+        <label>Muokkaa pyörän kohteita (yksi per rivi):</label>
+        <textarea
+          rows="6"
+          [(ngModel)]="wheelItemsText"
+          (ngModelChange)="updateWheelItems()"
+        ></textarea>
+        <button type="button" class="btn btn-accent" (click)="spinWheel()" [disabled]="isSpinning || !wheelItems.length">
+          {{ isSpinning ? 'Pyörii...' : 'Pyöräytä!' }}
+        </button>
+      </div>
+
+      <div class="wheel-display">
+        <div class="wheel-pointer">▼</div>
+        <div
+          class="wheel-disc"
+          [style.transform]="'rotate(' + wheelRotation + 'deg)'"
+          [style.transition]="isSpinning ? 'transform 3s cubic-bezier(0.15, 0.9, 0.2, 1)' : 'none'"
+        >
+          <div
+            *ngFor="let item of wheelItems; let i = index"
+            class="wheel-slice"
+            [style.transform]="'rotate(' + (i * (360 / wheelItems.length)) + 'deg)'"
+          >
+            <span>{{ item }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="selectedWheelItem" class="wheel-result">
+          🎉 Voitit / Valittu: <strong>{{ selectedWheelItem }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for editing class students -->
+  <div *ngIf="showEditClassModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3>Muokkaa luokan oppilaita</h3>
+      <p>Kirjoita oppilaiden nimet, yksi nimi per rivi:</p>
+      <textarea rows="10" [(ngModel)]="editingStudentsText"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeEditClassModal()">Peruuta</button>
+        <button type="button" class="btn btn-primary" (click)="saveClassStudents()">Tallenna</button>
+      </div>
+    </div>
+  </div>
+</div>
