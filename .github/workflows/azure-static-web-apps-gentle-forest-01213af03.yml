@@ -31,7 +31,7 @@ jobs:
 
       - name: Build frontend
         env:
-          API_BASE_URL: ${{ secrets.API_BASE_URL || 'https://your-backend-api-url.azurewebsites.net' }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL || 'http://[2001:14ba:a304:298e::1]:8080' }}
         run: |
           printf '%s\n' "export const environment = { production: true, apiBaseUrl: '${API_BASE_URL}' };" > src/environments/environment.prod.ts
           npm run build
