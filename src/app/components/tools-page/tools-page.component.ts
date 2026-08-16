@@ -52,7 +52,47 @@ export class ToolsPageComponent implements OnInit {
   wheelRotation = 0;
 
   ngOnInit(): void {
+    this.loadClassesFromCookie();
+  }
+
+  // Cookie storage helpers for classes
+  private loadClassesFromCookie(): void {
+    const cookieValue = this.getCookie('pupil_classes');
+    if (cookieValue) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(cookieValue));
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.classes = parsed;
+          this.selectedClassId = this.classes[0].id;
+          this.updateClassStudents();
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to parse pupil_classes cookie', e);
+      }
+    }
     this.updateClassStudents();
+    this.saveClassesToCookie();
+  }
+
+  saveClassesToCookie(): void {
+    const expiresDays = 30;
+    const d = new Date();
+    d.setTime(d.getTime() + expiresDays * 24 * 60 * 60 * 1000);
+    const expires = 'expires=' + d.toUTCString();
+    const encoded = encodeURIComponent(JSON.stringify(this.classes));
+    document.cookie = `pupil_classes=${encoded}; ${expires}; path=/; SameSite=Lax`;
+  }
+
+  private getCookie(name: string): string | null {
+    const nameEQ = name + '=';
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
   }
 
   get currentClass(): ClassData | undefined {
@@ -78,6 +118,7 @@ export class ToolsPageComponent implements OnInit {
     if (this.currentClass) {
       this.currentClass.studentsText = this.editingStudentsText;
       this.updateClassStudents();
+      this.saveClassesToCookie();
     }
     this.showEditClassModal = false;
   }
@@ -105,6 +146,7 @@ export class ToolsPageComponent implements OnInit {
     };
     this.classes.push(newClass);
     this.selectedClassId = newId;
+    this.saveClassesToCookie();
     this.openEditClassModal();
   }
 
@@ -152,12 +194,15 @@ export class ToolsPageComponent implements OnInit {
       .filter((s) => s.length > 0);
   }
 
+  selectedWheelItemIndex: number | null = null;
+
   spinWheel(): void {
     this.updateWheelItems();
     if (!this.wheelItems.length || this.isSpinning) return;
 
     this.isSpinning = true;
     this.selectedWheelItem = null;
+    this.selectedWheelItemIndex = null;
 
     const chosenIndex = Math.floor(Math.random() * this.wheelItems.length);
     const extraTurns = 5 + Math.floor(Math.random() * 3);
@@ -169,7 +214,25 @@ export class ToolsPageComponent implements OnInit {
 
     setTimeout(() => {
       this.isSpinning = false;
+      this.selectedWheelItemIndex = chosenIndex;
       this.selectedWheelItem = this.wheelItems[chosenIndex];
     }, 3000);
+  }
+
+  removeWinnerAndSpinAgain(): void {
+    if (this.selectedWheelItemIndex !== null && this.selectedWheelItemIndex >= 0 && this.selectedWheelItemIndex < this.wheelItems.length) {
+      this.wheelItems.splice(this.selectedWheelItemIndex, 1);
+      this.wheelItemsText = this.wheelItems.join('\n');
+      if (this.currentClass) {
+        this.currentClass.studentsText = this.wheelItemsText;
+        this.currentClass.students = [...this.wheelItems];
+        this.saveClassesToCookie();
+      }
+      this.selectedWheelItem = null;
+      this.selectedWheelItemIndex = null;
+      if (this.wheelItems.length > 0) {
+        this.spinWheel();
+      }
+    }
   }
 }

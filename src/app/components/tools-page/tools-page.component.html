@@ -157,7 +157,16 @@
         </div>
 
         <div *ngIf="selectedWheelItem" class="wheel-result">
-          🎉 Voitit / Valittu: <strong>{{ selectedWheelItem }}</strong>
+          <p>🎉 Voitit / Voittaja (Winner): <strong>{{ selectedWheelItem }}</strong></p>
+          <button
+            type="button"
+            class="btn btn-accent"
+            (click)="removeWinnerAndSpinAgain()"
+            [disabled]="isSpinning"
+            style="margin-top: 8px;"
+          >
+            Poista {{ selectedWheelItem }} ja pyöräytä uudelleen!
+          </button>
         </div>
       </div>
     </div>
