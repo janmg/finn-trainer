@@ -352,6 +352,7 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
       }))
       .sort((first, second) => second.averageTime - first.averageTime);
     this.submitMessage = 'Session complete! Great job.';
+    this.cdr.detectChanges();
   }
 
   stopAudio(): void {

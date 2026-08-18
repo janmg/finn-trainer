@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -50,6 +50,8 @@ export class ToolsPageComponent implements OnInit {
   selectedWheelItem: string | null = null;
   isSpinning = false;
   wheelRotation = 0;
+
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadClassesFromCookie();
@@ -216,6 +218,7 @@ export class ToolsPageComponent implements OnInit {
       this.isSpinning = false;
       this.selectedWheelItemIndex = chosenIndex;
       this.selectedWheelItem = this.wheelItems[chosenIndex];
+      this.cdr.detectChanges();
     }, 3000);
   }
 
