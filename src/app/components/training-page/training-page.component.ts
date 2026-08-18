@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subject, switchMap, takeUntil, timeout } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -11,7 +11,7 @@ import { Topic, TrainingPage } from '../../models/training-page.model';
 @Component({
   selector: 'app-training-page',
   standalone: true,
-  imports: [FormsModule, NgFor, NgIf, RouterLink, RouterLinkActive, TitleCasePipe],
+  imports: [DecimalPipe, FormsModule, NgFor, NgIf, RouterLink, RouterLinkActive, TitleCasePipe],
   templateUrl: './training-page.component.html',
   styleUrl: './training-page.component.css'
 })
@@ -36,12 +36,15 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
   currentRound = 0;
   soundStartTime = 0;
   isCorrect = false;
+  totalReactionTime = 0;
+  rankedVowels: { vowel: string; averageTime: number }[] = [];
 
   readonly languageTopics = ['vowels', 'consonants', 'numbers', 'people', 'verbs', 'grammer'];
   readonly trainingModes: Topic[] = ['listen', 'read', 'speak', 'write'];
 
   private readonly destroy$ = new Subject<void>();
   private soundQueue: string[] = [];
+  private reactionTimesByVowel: Record<string, number[]> = {};
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -232,6 +235,9 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
 
     this.isCorrect = isMatch;
     this.selectedVowel = vowel;
+    this.totalReactionTime += reactionTime;
+    this.reactionTimesByVowel[this.currentVowel] ??= [];
+    this.reactionTimesByVowel[this.currentVowel].push(reactionTime);
 
     if (isMatch) {
       this.submitMessage = `✓ Correct! The sound was ${this.currentVowel.toUpperCase()} (${reactionTime}ms)`;
@@ -291,6 +297,9 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
 
     this.isPlayingSession = true;
     this.currentRound = 0;
+    this.totalReactionTime = 0;
+    this.rankedVowels = [];
+    this.reactionTimesByVowel = {};
     this.submitMessage = '';
     this.playNextSound();
   }
@@ -336,6 +345,12 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
     console.log('[TrainingPageComponent] Session completed');
     this.isPlayingSession = false;
     this.currentVowel = null;
+    this.rankedVowels = Object.entries(this.reactionTimesByVowel)
+      .map(([vowel, times]) => ({
+        vowel,
+        averageTime: Math.round(times.reduce((total, time) => total + time, 0) / times.length)
+      }))
+      .sort((first, second) => second.averageTime - first.averageTime);
     this.submitMessage = 'Session complete! Great job.';
   }
 
@@ -349,6 +364,9 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
     this.currentVowel = null;
     this.currentRound = 0;
     this.soundQueue = [];
+    this.totalReactionTime = 0;
+    this.rankedVowels = [];
+    this.reactionTimesByVowel = {};
     this.submitMessage = '';
   }
 }

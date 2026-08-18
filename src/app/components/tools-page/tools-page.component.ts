@@ -223,11 +223,6 @@ export class ToolsPageComponent implements OnInit {
     if (this.selectedWheelItemIndex !== null && this.selectedWheelItemIndex >= 0 && this.selectedWheelItemIndex < this.wheelItems.length) {
       this.wheelItems.splice(this.selectedWheelItemIndex, 1);
       this.wheelItemsText = this.wheelItems.join('\n');
-      if (this.currentClass) {
-        this.currentClass.studentsText = this.wheelItemsText;
-        this.currentClass.students = [...this.wheelItems];
-        this.saveClassesToCookie();
-      }
       this.selectedWheelItem = null;
       this.selectedWheelItemIndex = null;
       if (this.wheelItems.length > 0) {

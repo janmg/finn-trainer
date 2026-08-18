@@ -77,49 +77,49 @@
             <td><span>a</span><button type="button" class="table-play-btn" aria-label="Play a" (click)="playVowelAudio('a')">▶</button></td>
             <td>ä</td>
             <td>a</td>
-            <td>father, car</td>
+            <td>f<span class="highlight-vowel">a</span>ther, c<span class="highlight-vowel">a</span>r</td>
           </tr>
           <tr>
             <td><span>e</span><button type="button" class="table-play-btn" aria-label="Play e" (click)="playVowelAudio('e')">▶</button></td>
             <td>ɛ</td>
             <td>e</td>
-            <td>best</td>
+            <td>b<span class="highlight-vowel">e</span>st</td>
           </tr>
           <tr>
             <td><span>i</span><button type="button" class="table-play-btn" aria-label="Play i" (click)="playVowelAudio('i')">▶</button></td>
             <td>i</td>
             <td>ee</td>
-            <td>feet</td>
+            <td>f<span class="highlight-vowel">ee</span>t</td>
           </tr>
           <tr>
             <td><span>o</span><button type="button" class="table-play-btn" aria-label="Play o" (click)="playVowelAudio('o')">▶</button></td>
             <td>ɔ</td>
             <td>oh</td>
-            <td>so, hope</td>
+            <td>s<span class="highlight-vowel">o</span>, h<span class="highlight-vowel">o</span>pe</td>
           </tr>
           <tr>
             <td><span>u</span><button type="button" class="table-play-btn" aria-label="Play u" (click)="playVowelAudio('u')">▶</button></td>
             <td>u</td>
             <td>oo</td>
-            <td>moon, scooter</td>
+            <td>m<span class="highlight-vowel">oo</span>n, sc<span class="highlight-vowel">oo</span>ter</td>
           </tr>
           <tr>
             <td><span>ä</span><button type="button" class="table-play-btn" aria-label="Play ä" (click)="playVowelAudio('ä')">▶</button></td>
             <td>æ</td>
             <td>a'</td>
-            <td>cat, apple</td>
+            <td>c<span class="highlight-vowel">a</span>t, <span class="highlight-vowel">a</span>pple</td>
           </tr>
           <tr>
             <td><span>ö</span><button type="button" class="table-play-btn" aria-label="Play ö" (click)="playVowelAudio('ö')">▶</button></td>
             <td>ɘ</td>
             <td>uh</td>
-            <td>liver</td>
+            <td>liv<span class="highlight-vowel">e</span>r</td>
           </tr>
           <tr>
             <td><span>y</span><button type="button" class="table-play-btn" aria-label="Play y" (click)="playVowelAudio('y')">▶</button></td>
             <td>y</td>
             <td>ü</td>
-            <td>über</td>
+            <td><span class="highlight-vowel">ü</span>ber</td>
           </tr>
           <tr>
             <td><span>å</span><button type="button" class="table-play-btn" aria-label="Play å" (click)="playVowelAudio('å')">▶</button></td>
@@ -161,6 +161,18 @@
       <div *ngIf="currentVowel" class="session-info">
         <p class="round-counter">Round: {{ currentRound }}/20</p>
       </div>
+
+      <section *ngIf="!isPlayingSession && rankedVowels.length" class="session-results" aria-live="polite">
+        <h4>Session results</h4>
+        <p>Total time finding buttons: <strong>{{ totalReactionTime / 1000 | number: '1.1-1' }}s</strong></p>
+        <ol>
+          <li *ngFor="let result of rankedVowels">
+            <strong>{{ result.vowel.toUpperCase() }}</strong>
+            <span>{{ result.averageTime }}ms average</span>
+          </li>
+        </ol>
+        <p class="results-note">Slowest to fastest</p>
+      </section>
 
       <p *ngIf="submitMessage" class="feedback" [class.correct]="isCorrect" [class.incorrect]="!isCorrect && submitMessage.includes('Incorrect')">
         {{ submitMessage }}

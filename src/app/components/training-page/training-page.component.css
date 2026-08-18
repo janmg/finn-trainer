@@ -207,6 +207,38 @@ article p {
   font-weight: 600;
 }
 
+.session-results {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border: 1px solid #b8d8d3;
+  border-radius: 10px;
+  background: #f1fbf8;
+}
+
+.session-results h4,
+.session-results p {
+  margin: 0;
+}
+
+.session-results ol {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.7rem 0 0;
+  padding-left: 1.5rem;
+}
+
+.session-results li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.results-note {
+  margin-top: 0.6rem !important;
+  color: #5a5a5a;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 760px) {
   .mode-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -266,6 +298,11 @@ article p {
 
 .table-play-btn:hover {
   background: #e6f5f2;
+}
+
+.highlight-vowel {
+  color: #c1121f;
+  font-weight: 700;
 }
 
 .vowel-exercise {
