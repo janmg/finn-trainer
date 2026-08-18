@@ -209,8 +209,10 @@ export class ToolsPageComponent implements OnInit {
     const chosenIndex = Math.floor(Math.random() * this.wheelItems.length);
     const extraTurns = 5 + Math.floor(Math.random() * 3);
     const degreesPerItem = 360 / this.wheelItems.length;
-    // Align so selected item ends up at top (270 deg / -90 deg offset)
-    const targetDeg = extraTurns * 360 + (360 - chosenIndex * degreesPerItem - degreesPerItem / 2);
+    const desiredAngle = 360 - chosenIndex * degreesPerItem - degreesPerItem / 2;
+    const currentAngle = ((this.wheelRotation % 360) + 360) % 360;
+    // Compensate for previous spins so the selected slice center stops at the pointer.
+    const targetDeg = extraTurns * 360 + desiredAngle - currentAngle;
 
     this.wheelRotation += targetDeg;
 
