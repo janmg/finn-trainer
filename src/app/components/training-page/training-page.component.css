@@ -249,6 +249,25 @@ article p {
   color: #e76f51;
 }
 
+.vowel-guide td:first-child {
+  white-space: nowrap;
+}
+
+.table-play-btn {
+  margin-left: 0.45rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid #2a9d8f;
+  border-radius: 5px;
+  background: #fff;
+  color: #1f7a6d;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.table-play-btn:hover {
+  background: #e6f5f2;
+}
+
 .vowel-exercise {
   margin-top: 1rem;
   padding: 1rem;

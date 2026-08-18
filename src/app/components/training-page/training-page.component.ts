@@ -319,6 +319,19 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  playVowelAudio(vowel: string): void {
+    if (!this.audioPlayer) {
+      return;
+    }
+
+    const audio = this.audioPlayer.nativeElement;
+    audio.src = `/assets/vowels/${vowel}.ogg`;
+    audio.currentTime = 0;
+    audio.play().catch((error) => {
+      console.error('[TrainingPageComponent] Error playing vowel audio:', error);
+    });
+  }
+
   private endSession(): void {
     console.log('[TrainingPageComponent] Session completed');
     this.isPlayingSession = false;
